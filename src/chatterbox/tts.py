@@ -13,6 +13,7 @@ from .models.s3tokenizer import S3_SR, drop_invalid_tokens
 from .models.s3gen import S3GEN_SR, S3Gen
 from .models.tokenizers import EnTokenizer
 from .models.voice_encoder import VoiceEncoder
+from .models.t3.clean_forward_bf16 import apply_optimized_inference
 from .models.t3.modules.cond_enc import T3Cond
 
 
@@ -162,7 +163,9 @@ class ChatterboxTTS:
         if (builtin_voice := ckpt_dir / "conds.pt").exists():
             conds = Conditionals.load(builtin_voice, map_location=map_location).to(device)
 
-        return cls(t3, s3gen, ve, tokenizer, device, conds=conds)
+        instance = cls(t3, s3gen, ve, tokenizer, device, conds=conds)
+        apply_optimized_inference(instance)
+        return instance
 
     @classmethod
     def from_pretrained(cls, device) -> 'ChatterboxTTS':
