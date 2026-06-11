@@ -1,5 +1,35 @@
 ![Chatterbox Turbo Image](./Chatterbox-Turbo.jpg)
 
+**Drop-in optimized fork of Chatterbox TTS. 30-50% faster. Zero config. Same audio quality.**
+
+Optimizations apply automatically when the model loads — no code changes needed.
+
+## Benchmarks (Turbo Model, 7 prompts average)
+
+| GPU | Original | Optimized | RTF | Improvement |
+|-----|----------|-----------|-----|-------------|
+| RTX 3060 (12GB) | 4.22s | **2.93s** | 0.279 | **-30.6%** |
+| RTX 4070 (12GB) | 5.33s | **2.65s** | 0.277 | **-50.3%** |
+| RTX 4060 Ti (16GB) | 3.90s | **2.21s** | 0.231 | **-43.3%** |
+
+## Usage
+
+```python
+from chatterbox.tts_turbo import ChatterboxTurboTTS
+model = ChatterboxTurboTTS.from_pretrained(device="cuda")  # auto-optimized!
+wav = model.generate("Hello world!")
+
+Install
+
+git clone https://github.com/Pranavharshans/ChatterBox-Lightning.git
+cd ChatterBox-Lightning
+pip install -e .
+
+Requires PyTorch 2.6+, CUDA 12.4+, GCC.
+
+How
+
+Pre-allocated KV cache + BF16 Flash SDPA + torch.compile on GPT-2 backbone. No model weights changed — identical audio output.
 
 # Chatterbox TTS
 
